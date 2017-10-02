@@ -1,5 +1,7 @@
 import random
-class game:
+
+
+class Game(object):
     playerName = ""
     playerPosition = 1
     doubleDice = False
@@ -12,14 +14,14 @@ class game:
         self.playerPosition = 1
 
     def roll(self):
-     self.doubleDice = False
-     self.roll1 = random.randint(0, 6)
-     self.roll2 = random.randint(0, 6)
-     sum = self.roll1 + self.roll2
-     if self.roll1 == self.roll2:
-        sum = -sum
-        self.doubleDice = True
-     return sum
+        self.doubleDice = False
+        self.roll1 = random.randint(1, 6)
+        self.roll2 = random.randint(1, 6)
+        sum = self.roll1 + self.roll2
+        if self.roll1 == self.roll2:
+            sum = -sum
+            self.doubleDice = True
+        return sum
 
     def move(self, steps):
         self.playerPosition += steps

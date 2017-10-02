@@ -1,14 +1,17 @@
 import csv
-class Obstacles:
+
+
+class Obstacles(object):
     fileName = ""
     obstacleNames = {}
     obstacleSpaces = {}
+
     def __init__(self, file):
          self.fileName = file
          self.readCsv()
 
     def readCsv(self):
-        with open(self.fileName, newline='') as csvfile:
+        with open(self.fileName) as csvfile:
             data= csv.reader(csvfile, delimiter=',')
             for row in data:
                 position = row[1]

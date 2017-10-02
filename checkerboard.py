@@ -1,27 +1,23 @@
 import lib.obstacles
-import random
 import lib.game
+import random
 import sys
 import os
 
-file = "resources/obstacles.csv"
-myObstacles = lib.obstacles.Obstacles(file)
+
+myObstacles = lib.obstacles
 myGame = lib.game
 
-obstacleNames = myObstacles.getObstacleNames()
-obstacleSpaces = myObstacles.getObstacleSpaces()
-print(obstacleNames)
-print(obstacleSpaces)
+file = "resources/obstacles.csv"
+obstacles = myObstacles.Obstacles(file)
+obstacleNames = obstacles.getObstacleNames()
+obstacleSpaces = obstacles.getObstacleSpaces()
 
-player1 = myGame.game("Player 1")
-player2 = myGame.game("Player 2")
-
-key = "32"
-if key in obstacleNames:
-    print(obstacleNames[key])
-
-if key in obstacleSpaces:
-    print(obstacleSpaces[key])
+player1 = myGame.Game("Player 1")
+player2 = myGame.Game("Player 2")
+players = []
+players.append(player1)
+players.append(player2)
 
 choosing = True
 while choosing:
@@ -33,7 +29,6 @@ while choosing:
     print ("2. Exit")
     print (30 * '-')
 
-    players = []
     ## Get input ###
     choice = input('Enter your choice [1-2] : ')
 
@@ -46,17 +41,38 @@ while choosing:
         print ("Starting game...")
         choosing = False
         if random.randint(0, 2) == 1:
-            players = [player1,player2]
-            print("Player 1 has been randomly chosen to start")
+            print("\nPlayer 1 has been randomly chosen to start\n")
         else:
-            players = [player2,player1]
-            print("Player 2 has been randomly chosen to start")
+            print("Player 2 has been randomly chosen to start\n")
+            players.reverse()
 
         while not gameOver:
             for player in players:
-                player
-                print("")
-                gameOver = True
+                print("\n" + player.playerName + " playing")
+                #command = player.playerName + " please press 'p' to roll dice : "
+                #raw_input(command)
+                sum = player.roll()
+                print("Previous position: " + str(player.playerPosition))
+                print("Dice 1: " + str(player.roll1))
+                print("Dice 2: " + str(player.roll2))
+                print("Sum: " + str(sum))
+                player.move(sum)
+                print("New position: " + str(player.playerPosition))
+
+                if str(player.playerPosition) in obstacleNames:
+                    steps = obstacleSpaces.get(str(player.playerPosition))
+                    obs = obstacleNames.get(str(player.playerPosition))
+                    if int(steps) < 0:
+                        print("Oops! You have landed on obstacle " + obs + ". You will be moved backwards by " + steps + " steps")
+                    else:
+                        print("Congratulations! You have landed on bonus " + obs + ". You will be moved forward by " + steps + " steps")
+                    player.move(int(steps))
+
+                if player.victory == True:
+                    gameOver = True
+                    print("\n\033[0;32;40mGame over! Winner is " + player.playerName+"\033[0;32;40m")
+                    print "\n"
+                    break
 
     elif choice == 2:
         print ("Bye!")

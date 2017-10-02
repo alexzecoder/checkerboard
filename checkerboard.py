@@ -63,15 +63,17 @@ while choosing:
                     steps = obstacleSpaces.get(str(player.playerPosition))
                     obs = obstacleNames.get(str(player.playerPosition))
                     if int(steps) < 0:
-                        print("Oops! You have landed on obstacle " + obs + ". You will be moved backwards by " + steps + " steps")
+                        print("\033[0;37;41mOops! You have landed on obstacle " + obs + ". You will be moved backwards by " + steps + " steps\033[0;37;41m")
+                        print("\033[0;0;0m")
                     else:
-                        print("Congratulations! You have landed on bonus " + obs + ". You will be moved forward by " + steps + " steps")
+                        print("\033[0;37;42mCongratulations! You have landed on bonus " + obs + ". You will be moved forward by " + steps + " steps\033[0;37;42m")
+                        print("\033[0;0;0m")
                     player.move(int(steps))
 
                 if player.victory == True:
                     gameOver = True
-                    print("\n\033[0;32;40mGame over! Winner is " + player.playerName+"\033[0;32;40m")
-                    print "\n"
+                    print("\n\033[0;37;42mGame over! Winner is " + player.playerName+"\033[0;37;42m")
+                    print("\033[0;0;0m\n")
                     break
 
     elif choice == 2:

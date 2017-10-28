@@ -1,17 +1,18 @@
-import lib.obstacles
+import lib.hot_spots
 import lib.game
+import lib.board
 import random
 import sys
 import os
 
-
-myObstacles = lib.obstacles
+mySpots = lib.hot_spots
 myGame = lib.game
+myBoard = lib.board
 
-file = "resources/obstacles.csv"
-obstacles = myObstacles.Obstacles(file)
-obstacleNames = obstacles.getObstacleNames()
-obstacleSpaces = obstacles.getObstacleSpaces()
+file = "resources/spots.csv"
+spots = mySpots.Spots(file)
+spotNames = spots.getSpotNames()
+spotSteps = spots.getSpotSteps()
 
 player1 = myGame.Game("Player 1")
 player2 = myGame.Game("Player 2")
@@ -19,15 +20,24 @@ players = []
 players.append(player1)
 players.append(player2)
 
+red = "\033[0;37;41m"
+green = "\033[0;37;42m"
+normal = "\033[0;0;0m"
+blue = "\033[0;37;44m"
+purple = "\033[0;37;45m"
+cyan = "\033[0;37;46m"
+
+
+#myGrid.grid()
 choosing = True
 while choosing:
     ## Show menu ##
-    print (30 * '-')
+    print (22 * '-')
     print ("   G A M E - M E N U")
-    print (30 * '-')
+    print (22 * '-')
     print ("1. Play")
     print ("2. Exit")
-    print (30 * '-')
+    print (22 * '-')
 
     ## Get input ###
     choice = input('Enter your choice [1-2] : ')
@@ -47,8 +57,16 @@ while choosing:
             players.reverse()
 
         while not gameOver:
+            position1 = 1
+            position2 = 1
             for player in players:
-                print("\n" + player.playerName + " playing")
+                if(player == player1):
+                    print("\n" + blue + player.playerName + blue)
+                else:
+                    print("\n" + purple + player.playerName + purple)
+
+                print(normal)
+
                 #command = player.playerName + " please press 'p' to roll dice : "
                 #raw_input(command)
                 sum = player.roll()
@@ -59,9 +77,9 @@ while choosing:
                 player.move(sum)
                 print("New position: " + str(player.playerPosition))
 
-                if str(player.playerPosition) in obstacleNames:
-                    steps = obstacleSpaces.get(str(player.playerPosition))
-                    obs = obstacleNames.get(str(player.playerPosition))
+                if str(player.playerPosition) in spotNames:
+                    steps = spotSteps.get(str(player.playerPosition))
+                    obs = spotNames.get(str(player.playerPosition))
                     if int(steps) < 0:
                         print("\033[0;37;41mOops! You have landed on obstacle " + obs + ". You will be moved backwards by " + steps + " steps\033[0;37;41m")
                         print("\033[0;0;0m")
@@ -69,6 +87,14 @@ while choosing:
                         print("\033[0;37;42mCongratulations! You have landed on bonus " + obs + ". You will be moved forward by " + steps + " steps\033[0;37;42m")
                         print("\033[0;0;0m")
                     player.move(int(steps))
+                    print("New position: " + str(player.playerPosition))
+
+                if(player == player1):
+                    position1 = player.playerPosition
+
+                if(player == player2):
+                    position2 = player.playerPosition
+                myBoard.drawBoard(position1, position2, spotSteps)
 
                 if player.victory == True:
                     gameOver = True

@@ -99,54 +99,68 @@ class Checkerboard(object):
             column += 1
         pygame.display.update()
 
+def quit():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+            sys.exit()
+
+
+def play(board):
+    position1 = 1
+    position2 = 1
+    for player in players:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.event.wait()
+
+        sum = player.roll()
+        player.move(sum)
+
+        position = player.get_position()
+
+        if str(position) in squares_to_move:
+            additional_steps = squares_to_move.get(str(position))
+            player.move(int(additional_steps))
+
+        if player == player_one:
+            position1 = position
+
+        if player == player_two:
+            position2 = position
+
+        board.draw_checker_board(position1, position2, squares_to_move)
+        pygame.event.wait()
+
+        print("p1 "+str(position1))
+        print("p2 "+str(position2))
+        print("winner "+str(player.check_winner()))
+
+        if player.check_winner():
+            return True
+
 def main():
     board = Checkerboard()
 
-    while True:
-        if pygame.event.get(pygame.QUIT):
-            break
-        gameOver = False
+    gameOver = False
 
-        while not gameOver:
-            # This limits the while loop to a max of 10 times per second.
-            clock.tick(10)
+    while not gameOver:
+        # This limits the while loop to a max of 10 times per second.
+        clock.tick(10)
 
-            position1 = 1
-            position2 = 1
-            board.draw_checker_board(position1, position2, squares_to_move)
-            for player in players:
-                pygame.event.wait()
+        board.draw_checker_board(1, 1, squares_to_move)
+        gameOver = play(board)
 
-                sum = player.roll()
-                player.move(sum)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameOver = False
+                pygame.quit()
+                sys.exit()
 
-                position = player.get_position()
-
-                if str(position) in squares_to_move:
-                    additional_steps = squares_to_move.get(str(position))
-                    player.move(int(additional_steps))
-
-                if player == player_one:
-                    position1 = position
-
-                if player == player_two:
-                    position2 = position
-
-                board.draw_checker_board(position1, position2, squares_to_move)
-                pygame.event.wait()
-
-                print("p1 "+str(position1))
-                print("p2 "+str(position2))
-                print("winner "+str(player.check_winner()))
-
-                if player.check_winner():
-                    gameOver = True
-                    break
-
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
 
 if __name__ == '__main__':
     main()
